@@ -7,9 +7,12 @@ import ResultCard from "../components/ResultCard";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// Axios is imported but not used in this component. It can be used later for making API calls to the backend for analysis results.
+import axios from "axios";
 
 function Home() {
-  const [image, setImage] = useState(null);
+const [image, setImage] = useState(null);
+const [imageFile, setImageFile] = useState(null);
   const [income, setIncome] = useState("");
   const cardRef = useRef(null);
   const containerRef = useRef(null);
@@ -66,31 +69,50 @@ function Home() {
     }
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
+const handleImageChange = (event) => {
+  const file = event.target.files[0];
 
-    if (file) {
-      setImage(URL.createObjectURL(file));
-    }
-  };
+  if (file) {
+    setImage(URL.createObjectURL(file));
+    setImageFile(file);
+  }
+};
 
   const handleIncomeChange = (event) => {
     setIncome(event.target.value);
   };
 
-  const handleAnalyze = () => {
-    if (!image) {
-      toast.error("Please upload an image");
-      return;
-    }
+const handleAnalyze = async () => {
+  if (!image) {
+    toast.error("Please upload an image");
+    return;
+  }
 
-    if (!income) {
-      toast.error("Please select an income range");
-      return;
-    }
+  if (!income) {
+    toast.error("Please select an income range");
+    return;
+  }
 
-    toast.success("Analysis Started!");
-  };
+  try {
+  const formData = new FormData();
+
+  formData.append("image", imageFile);
+  formData.append("income", income);
+
+  const response = await axios.post(
+    "http://localhost:5000/api/analyze",
+    formData
+  );
+
+  toast.success(response.data.message);
+
+  console.log(response.data);
+
+} catch (error) {
+  toast.error("Backend Connection Failed");
+  console.error(error);
+}
+};
 
   return (
     <>
