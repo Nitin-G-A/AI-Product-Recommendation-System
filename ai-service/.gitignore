@@ -1,0 +1,22 @@
+# Node
+node_modules/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Uploads
+uploads/
+
+# Environment files
+.env
+
+# VS Code
+.vscode/
+
+# DeepFace models
+.deepface/
+
+# Temporary files
+temp.jpg

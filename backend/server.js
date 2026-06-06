@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
 
 const app = express();
 
@@ -24,18 +27,42 @@ app.get("/", (req, res) => {
 app.post(
   "/api/analyze",
   upload.single("image"),
-  (req, res) => {
+  async (req, res) => {
+    try {
 
-    console.log("Income:", req.body.income);
+      const formData = new FormData();
 
-    console.log("File:", req.file);
+      formData.append(
+        "image",
+        fs.createReadStream(req.file.path)
+      );
 
-    res.json({
-      success: true,
-      message: "Image Received Successfully",
-      income: req.body.income,
-      fileName: req.file.originalname,
-    });
+      const flaskResponse = await axios.post(
+        "http://127.0.0.1:5001/analyze",
+        formData,
+        {
+          headers: formData.getHeaders(),
+        }
+      );
+
+      fs.unlinkSync(req.file.path);
+      console.log(flaskResponse.data);
+
+      res.json({
+        success: true,
+        age: flaskResponse.data.age,
+        gender: flaskResponse.data.gender,
+        income: req.body.income,
+      });
+
+    } catch (error) {
+
+      console.error(error.message);
+
+      res.status(500).json({
+        error: "AI Analysis Failed",
+      });
+    }
   }
 );
 
