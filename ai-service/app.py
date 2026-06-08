@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from deepface import DeepFace
 import os
+from db import get_connection
 
 app = Flask(__name__)
 
@@ -13,6 +14,7 @@ def analyze():
         }), 400
 
     image = request.files["image"]
+    income = request.form.get("income")
 
     image_path = "temp.jpg"
     image.save(image_path)
@@ -24,13 +26,36 @@ def analyze():
         enforce_detection=True
     )
 
+    age = result[0]["age"]
+    gender = result[0]["dominant_gender"]
+
+    print("Age:", age)
+    print("Gender:", gender)
+    print("Saving to database...")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+    """
+    INSERT INTO customers(age, gender, income)
+    VALUES (%s, %s, %s)
+    """,
+    (age, gender, income)
+    )
+
+    conn.commit()
+    print("Saved successfully!")
+
+    cursor.close()
+    conn.close()
+
     os.remove(image_path)
 
-    face = result[0]
-
     return jsonify({
-        "age": int(face["age"]),
-        "gender": face["dominant_gender"]
+        "age": age,
+        "gender": gender,
+        "income": income
     })
 
 if __name__ == "__main__":

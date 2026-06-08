@@ -9,14 +9,14 @@ __pycache__/
 # Uploads
 uploads/
 
-# Environment files
+# Environment
 .env
+
+# DeepFace Models
+.deepface/
+
+# Temporary Files
+temp.jpg
 
 # VS Code
 .vscode/
-
-# DeepFace models
-.deepface/
-
-# Temporary files
-temp.jpg

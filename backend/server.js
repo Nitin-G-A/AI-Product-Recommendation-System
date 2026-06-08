@@ -37,6 +37,11 @@ app.post(
         fs.createReadStream(req.file.path)
       );
 
+      formData.append(
+        "income",
+        req.body.income
+        );
+
       const flaskResponse = await axios.post(
         "http://127.0.0.1:5001/analyze",
         formData,
