@@ -14,6 +14,7 @@ function Home() {
 const [image, setImage] = useState(null);
 const [imageFile, setImageFile] = useState(null);
   const [income, setIncome] = useState("");
+  const [result, setResult] = useState(null);
   const cardRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -104,9 +105,11 @@ const handleAnalyze = async () => {
     formData
   );
 
-  toast.success(response.data.message);
+setResult(response.data);
 
-  console.log(response.data);
+toast.success("Analysis Complete");
+
+console.log(response.data);
 
 } catch (error) {
   toast.error("Backend Connection Failed");
@@ -145,7 +148,7 @@ const handleAnalyze = async () => {
             Analyze
           </button>
 
-          <ResultCard />
+          <ResultCard result={result} />
 
         </div>
       </div>

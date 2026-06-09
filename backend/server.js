@@ -53,13 +53,15 @@ app.post(
       fs.unlinkSync(req.file.path);
       console.log(flaskResponse.data);
 
-      res.json({
-        success: true,
-        age: flaskResponse.data.age,
-        gender: flaskResponse.data.gender,
-        income: req.body.income,
-      });
-
+     res.json({
+      success: true,
+      age: flaskResponse.data.age,
+      gender: flaskResponse.data.gender,
+      age_group: flaskResponse.data.age_group,
+      income: req.body.income,
+      recommended_product:
+      flaskResponse.data.recommended_product,
+  });
     } catch (error) {
 
       console.error(error.message);

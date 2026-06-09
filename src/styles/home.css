@@ -255,6 +255,27 @@ select:focus {
   line-height: 1.5;
 }
 
+.recommendation-card {
+  margin-top: 15px;
+  padding: 18px;
+  border-radius: 14px;
+  text-align: center;
+  background: linear-gradient(135deg, #0f4c81, #40e0d0);
+  color: white;
+  box-shadow: 0 8px 20px rgba(15, 76, 129, 0.3);
+}
+
+.recommendation-title {
+  color: #ffd700;
+  margin-bottom: 10px;
+}
+
+.recommendation-product {
+  font-size: 28px;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
 /* --- Responsive Web Design --- */
 
 /* For Tablets and smaller Desktop screens */
