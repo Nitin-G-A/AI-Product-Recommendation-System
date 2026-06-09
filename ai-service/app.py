@@ -1,9 +1,25 @@
 from flask import Flask, request, jsonify
 from deepface import DeepFace
 import os
+
 from db import get_connection
+from predict import predict_product
 
 app = Flask(__name__)
+
+
+def age_to_group(age):
+    if age <= 12:
+        return "Child"
+    elif age <= 19:
+        return "Teen"
+    elif age <= 35:
+        return "Young Adult"
+    elif age <= 55:
+        return "Adult"
+    else:
+        return "Senior"
+
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
@@ -14,62 +30,90 @@ def analyze():
         }), 400
 
     image = request.files["image"]
+
     income = request.form.get("income")
+
+    # Convert frontend income values to ML values
+    income_mapping = {
+        "20,000 - 50,000": "20000-50000",
+        "50,000 - 100,000": "50000-100000",
+        "50,000 - 1,00,000": "50000-100000",
+        "100,000+": "Above 100000",
+        "1,00,000+": "Above 100000"
+    }
+
+    income = income_mapping.get(income, income)
 
     image_path = "temp.jpg"
     image.save(image_path)
 
-    result = DeepFace.analyze(
-        img_path=image_path,
-        actions=["age", "gender"],
-        detector_backend="retinaface",
-        enforce_detection=True
-    )
+    try:
 
-    age = result[0]["age"]
-    gender = result[0]["dominant_gender"]
+        result = DeepFace.analyze(
+            img_path=image_path,
+            actions=["age", "gender"],
+            detector_backend="retinaface",
+            enforce_detection=True
+        )
 
-    if age < 13:
-     age_group = "Child"
-    elif age < 20:
-     age_group = "Teen"
-    elif age < 36:
-     age_group = "Young Adult"
-    elif age < 60:
-     age_group = "Adult"
-    else:
-     age_group = "Senior"
+        age = result[0]["age"]
+        gender = result[0]["dominant_gender"]
 
-    print("Age:", age)
-    print("Gender:", gender)
-    print("Age Group:", age_group)
-    print("Saving to database...")
+        # Convert DeepFace gender values
+        if gender == "Man":
+            gender = "Male"
+        elif gender == "Woman":
+            gender = "Female"
 
-    conn = get_connection()
-    cursor = conn.cursor()
+        age_group = age_to_group(age)
 
-    cursor.execute(
-    """
-    INSERT INTO customers(age, gender, income, age_group)
-    VALUES (%s, %s, %s, %s)
-    """,
-    (age, gender, income, age_group)
-   )
+        product = predict_product(
+            age_group,
+            gender,
+            income
+        )
 
-    conn.commit()
-    print("Saved successfully!")
+        print("Age:", age)
+        print("Gender:", gender)
+        print("Age Group:", age_group)
+        print("Income:", income)
+        print("Recommended Product:", product)
 
-    cursor.close()
-    conn.close()
+        conn = get_connection()
+        cursor = conn.cursor()
 
-    os.remove(image_path)
+        cursor.execute(
+            """
+            INSERT INTO customers(age, gender, income, age_group)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (age, gender, income, age_group)
+        )
 
-    return jsonify({
-    "age": age,
-    "age_group": age_group,
-    "gender": gender,
-    "income": income
-   })
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "age": age,
+            "age_group": age_group,
+            "gender": gender,
+            "income": income,
+            "recommended_product": product
+        })
+
+    except Exception as e:
+        print("ERROR:", e)
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+
+    finally:
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
 
 if __name__ == "__main__":
     app.run(port=5001, debug=True)
