@@ -72,6 +72,12 @@ def analyze():
             gender,
             income
         )
+        confidence = 90.0
+
+        reason = (
+        f"{age_group} {gender}s in this income range "
+        f"commonly prefer {product}"
+      )
 
         print("Age:", age)
         print("Gender:", gender)
@@ -83,12 +89,28 @@ def analyze():
         cursor = conn.cursor()
 
         cursor.execute(
-            """
-            INSERT INTO customers(age, gender, income, age_group)
-            VALUES (%s, %s, %s, %s)
-            """,
-            (age, gender, income, age_group)
-        )
+    """
+    INSERT INTO customers(
+        age,
+        gender,
+        income,
+        age_group,
+        recommended_product,
+        confidence_score,
+        recommendation_reason
+    )
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """,
+    (
+        age,
+        gender,
+        income,
+        age_group,
+        product,
+        confidence,
+        reason
+    )
+)
 
         conn.commit()
 
@@ -96,13 +118,14 @@ def analyze():
         conn.close()
 
         return jsonify({
-            "age": age,
-            "age_group": age_group,
-            "gender": gender,
-            "income": income,
-            "recommended_product": product
-        })
-
+    "age": age,
+    "age_group": age_group,
+    "gender": gender,
+    "income": income,
+    "recommended_product": product,
+    "confidence": confidence,
+    "reason": reason
+      })
     except Exception as e:
         print("ERROR:", e)
 

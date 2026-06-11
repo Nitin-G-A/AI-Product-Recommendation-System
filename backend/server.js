@@ -4,6 +4,7 @@ const multer = require("multer");
 const axios = require("axios");
 const FormData = require("form-data");
 const fs = require("fs");
+const db = require("./db");
 
 const app = express();
 
@@ -72,6 +73,102 @@ app.post(
     }
   }
 );
+
+//Total Customers API
+app.get("/api/analytics/total-customers", (req, res) => {
+
+  const query = `
+    SELECT COUNT(*) AS total
+    FROM customers
+  `;
+
+  db.query(query, (err, results) => {
+
+    if (err) {
+      return res.status(500).json({
+        error: err.message,
+      });
+    }
+
+    res.json({
+      total_customers: results[0].total,
+    });
+
+  });
+
+});
+
+// Gender Analytics API
+app.get("/api/analytics/gender", (req, res) => {
+
+  const query = `
+    SELECT gender,
+    COUNT(*) AS count
+    FROM customers
+    GROUP BY gender
+  `;
+
+  db.query(query, (err, results) => {
+
+    if (err) {
+      return res.status(500).json({
+        error: err.message,
+      });
+    }
+
+    res.json(results);
+
+  });
+
+});
+
+//Product Analytics API
+app.get("/api/analytics/products", (req, res) => {
+
+  const query = `
+    SELECT recommended_product,
+    COUNT(*) AS count
+    FROM customers
+    GROUP BY recommended_product
+  `;
+
+  db.query(query, (err, results) => {
+
+    if (err) {
+      return res.status(500).json({
+        error: err.message,
+      });
+    }
+
+    res.json(results);
+
+  });
+
+});
+
+//Income Analytics API
+app.get("/api/analytics/income", (req, res) => {
+
+  const query = `
+    SELECT income,
+    COUNT(*) AS count
+    FROM customers
+    GROUP BY income
+  `;
+
+  db.query(query, (err, results) => {
+
+    if (err) {
+      return res.status(500).json({
+        error: err.message,
+      });
+    }
+
+    res.json(results);
+
+  });
+
+});
 
 // Start Server
 const PORT = 5000;

@@ -4,11 +4,17 @@ import "../styles/home.css";
 import ImageUpload from "../components/ImageUpload";
 import IncomeSelector from "../components/IncomeSelector";
 import ResultCard from "../components/ResultCard";
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import Features from "../components/Features";
+import About from "../components/About";
+import Footer from "../components/Footer";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // Axios is imported but not used in this component. It can be used later for making API calls to the backend for analysis results.
 import axios from "axios";
+import Dashboard from "../components/Dashboard";
 
 function Home() {
 const [image, setImage] = useState(null);
@@ -117,45 +123,72 @@ console.log(response.data);
 }
 };
 
-  return (
-    <>
-      <div className="container">
-        <h1>
-          AI Product Recommendation System
-        </h1>
+return (
+  <>
+    <Navbar />
 
-        <div 
-          className="card"
-          ref={cardRef}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
+    <Hero />
+
+    <Features />
+
+    {/* Recommendation Section */}
+    <section
+     id="recommend"
+     className="recommend-section"
+     ref={containerRef}
+     >
+      <h2 className="section-title">
+        Get Personalized Recommendations
+      </h2>
+      <p className="section-subtitle">
+        Upload your image and select income range
+      </p>
+      <div
+        className="card"
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        <ImageUpload
+          image={image}
+          handleImageChange={handleImageChange}
+        />
+
+        <IncomeSelector
+          income={income}
+          handleIncomeChange={handleIncomeChange}
+        />
+
+        <button
+          className="analyze-btn"
+          onClick={handleAnalyze}
         >
-
-          <ImageUpload
-            image={image}
-            handleImageChange={handleImageChange}
-          />
-
-          <IncomeSelector
-            income={income}
-            handleIncomeChange={handleIncomeChange}
-          />
-
-          <button
-            className="analyze-btn"
-            onClick={handleAnalyze}
-          >
-            Analyze
-          </button>
-
-          <ResultCard result={result} />
-
-        </div>
+          Analyze
+        </button>
       </div>
+    </section>
 
-      <ToastContainer />
-    </>
-  );
+    {/* Results Section */}
+    <section className="container">
+      <div className="card">
+        <h2 className="section-title">
+         Analysis Results
+        </h2>
+        <ResultCard result={result} />
+      </div>
+    </section>
+
+    {/* Dashboard Section */}
+    <section id="dashboard" className="dashboard-page">
+          <Dashboard />
+    </section>
+    <About />
+
+    <Footer />
+
+    <ToastContainer />
+  </>
+);
 }
 
 export default Home;
