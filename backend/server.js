@@ -64,13 +64,14 @@ app.post(
       flaskResponse.data.recommended_product,
   });
     } catch (error) {
-
-      console.error(error.message);
-
-      res.status(500).json({
-        error: "AI Analysis Failed",
-      });
-    }
+  console.error(error.response?.data || error.message);
+  res.status(500).json({
+    error:
+      error.response?.data?.error ||
+      error.message ||
+      "AI Analysis Failed"
+  });
+}
   }
 );
 

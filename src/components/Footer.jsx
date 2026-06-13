@@ -1,14 +1,18 @@
 function Footer() {
   return (
     <footer className="footer">
-      <p>
-        © 2026 Smart Retail AI
-      </p>
+      <div className="footer-brand">
+        <div className="brand-icon">🤖</div>
+        <span>Smart Retail AI</span>
+      </div>
 
-      <p>
-        Built with React, Node.js,
-        Flask, MySQL and Machine Learning
-      </p>
+      <div className="footer-center">
+        <p>© 2026 Smart Retail AI — All rights reserved</p>
+      </div>
+
+      <div className="footer-right">
+        <p>React · Node.js · Flask · MySQL · ML</p>
+      </div>
     </footer>
   );
 }

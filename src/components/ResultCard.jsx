@@ -1,42 +1,30 @@
 function ResultCard({ result }) {
+  if (!result) return null;
 
-  if (!result) {
-    return (
-      <div className="result-card">
-        <h3>Results</h3>
-        <p>Analysis results will appear here.</p>
-      </div>
-    );
-  }
+  const items = [
+    { label: "Gender",             emoji: "⚧",  value: result.gender },
+    { label: "Age Group",          emoji: "👤",  value: result.age_group },
+    { label: "Income Range",       emoji: "💰",  value: result.income },
+    { label: "Recommended Product",emoji: "🛍",  value: result.recommended_product },
+  ];
 
   return (
     <div className="result-card">
-      <h3>Results</h3>
+      <h2>🤖 AI Recommendation Result</h2>
 
-      <p>
-        <strong>Gender:</strong> {result.gender}
-      </p>
-
-      <p>
-        <strong>Age Group:</strong> {result.age_group}
-      </p>
-
-      <p>
-        <strong>Income:</strong> {result.income}
-      </p>
-
-      <hr />
-
-      <div className="recommendation-card">
-        <h2 className="recommendation-title">
-          🎯 Recommended Product
-        </h2>
-
-        <p className="recommendation-product">
-          {result.recommended_product}
-        </p>
+      <div className="result-grid">
+        {items.map((item) => (
+          <div className="result-item" key={item.label}>
+            <span>{item.emoji} {item.label}</span>
+            <strong>{item.value}</strong>
+          </div>
+        ))}
       </div>
 
+      <div className="recommendation-box">
+        <h3>🎯 Your Personalised Recommendation</h3>
+        <div className="product-badge">{result.recommended_product}</div>
+      </div>
     </div>
   );
 }

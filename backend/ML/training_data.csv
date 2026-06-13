@@ -1,15 +1,22 @@
 age_group,gender,income,product_category
-Child,Female,Below 20000,Toys
-Child,Male,Below 20000,Toys
-Teen,Female,Below 20000,Fashion
-Teen,Male,Below 20000,Games
+Child,Female,Below20000,Toys
+Child,Male,Below20000,Toys
+Teen,Female,Below20000,Fashion
+Teen,Male,Below20000,Games
 Young Adult,Female,20000-50000,Beauty
 Young Adult,Male,20000-50000,Electronics
 Young Adult,Female,50000-100000,Fashion
 Young Adult,Male,50000-100000,Gadgets
 Adult,Female,50000-100000,Home Decor
 Adult,Male,50000-100000,Fitness
-Adult,Female,Above 100000,Luxury Fashion
-Adult,Male,Above 100000,Premium Electronics
+Adult,Female,Above100000,Luxury Fashion
+Adult,Male,Above100000,Premium Electronics
 Senior,Female,50000-100000,Healthcare
 Senior,Male,50000-100000,Healthcare
+Young Adult,Male,Below20000,Fashion
+Young Adult,Male,20000-50000,Electronics
+Young Adult,Male,50000-100000,Gadgets
+Young Adult,Male,Above100000,Luxury Products
+Adult,Female,Above100000,Jewellery
+Adult,Male,Above100000,Luxury Products
+Senior,Female,Above100000,Travel

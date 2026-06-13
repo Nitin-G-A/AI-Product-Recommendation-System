@@ -35,12 +35,11 @@ def analyze():
 
     # Convert frontend income values to ML values
     income_mapping = {
-        "20,000 - 50,000": "20000-50000",
-        "50,000 - 100,000": "50000-100000",
-        "50,000 - 1,00,000": "50000-100000",
-        "100,000+": "Above 100000",
-        "1,00,000+": "Above 100000"
-    }
+    "Below 20,000": "Below20000",
+    "20,000 - 50,000": "20000-50000",
+    "50,000 - 1,00,000": "50000-100000",
+    "Above 1,00,000": "Above100000"
+}
 
     income = income_mapping.get(income, income)
 
@@ -132,7 +131,6 @@ def analyze():
         return jsonify({
             "error": str(e)
         }), 500
-
     finally:
         if os.path.exists(image_path):
             os.remove(image_path)
